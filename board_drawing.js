@@ -4,10 +4,16 @@ let cols = 11;
 
 $(document).ready(function() {
 
-    drawBoard('game_board');
-    drawPieces('game_board');
+    initBoard('game_board');
 
 });
+
+function initBoard(gameBoardId) {
+
+    drawBoard(gameBoardId);
+    drawPieces(gameBoardId);
+
+}
 
 function drawBoard(gameBoardId) {
 
