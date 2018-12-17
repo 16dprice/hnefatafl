@@ -55,17 +55,7 @@ function drawPieces(gameBoardId) {
 
 function drawKing(gameBoardId, kingPosition) {
 
-    // get the king square as a jQuery object
-    let kingSquare = $("#" + gameBoardId).find("td[data-pos=" + kingPosition + "]");
-
-    // create the king image
-    let img = $(document.createElement('img'));
-    img.attr('src', 'img/king.PNG');
-    img.attr('class', 'piece');
-
-    // put the king piece on the board
-    kingSquare.append(img);
-    kingSquare.attr('data-occupied', 'true');
+    drawPiece(gameBoardId, 'img/king.PNG', kingPosition);
 
 }
 
@@ -81,38 +71,12 @@ function drawKingPawns(gameBoardId, kingPosition) {
         kingPosition + 2
     ];
 
-    horizontalPositions.forEach(function(pos) {
-        // get the pawn square
-        let pawnSquare = $("#" + gameBoardId).find("td[data-pos=" + pos + "]");
-
-        // create the pawn image
-        let img = $(document.createElement('img'));
-        img.attr('src', 'img/king_pawn.PNG');
-        img.attr('class', 'piece');
-
-        // place the piece
-        pawnSquare.append(img);
-    });
-
     let verticalPositions = [
         kingPosition - (2 * cols),
         kingPosition - cols,
         kingPosition + cols,
         kingPosition + (2 * cols)
     ];
-
-    verticalPositions.forEach(function(pos) {
-        // get the pawn square
-        let pawnSquare = $("#" + gameBoardId).find("td[data-pos=" + pos + "]");
-
-        // create the pawn image
-        let img = $(document.createElement('img'));
-        img.attr('src', 'img/king_pawn.PNG');
-        img.attr('class', 'piece');
-
-        // place the piece
-        pawnSquare.append(img);
-    });
 
     let diagonalPositions = [
         kingPosition - cols - 1,
@@ -121,17 +85,10 @@ function drawKingPawns(gameBoardId, kingPosition) {
         kingPosition + cols + 1
     ];
 
-    diagonalPositions.forEach(function(pos) {
-        // get the pawn square
-        let pawnSquare = $("#" + gameBoardId).find("td[data-pos=" + pos + "]");
+    let positions = horizontalPositions.concat(verticalPositions, diagonalPositions);
 
-        // create the pawn image
-        let img = $(document.createElement('img'));
-        img.attr('src', 'img/king_pawn.PNG');
-        img.attr('class', 'piece');
-
-        // place the piece
-        pawnSquare.append(img);
+    positions.forEach(function(pos) {
+        drawPiece(gameBoardId, 'img/king_pawn.PNG', pos);
     });
 
 }
@@ -139,5 +96,28 @@ function drawKingPawns(gameBoardId, kingPosition) {
 function drawAttackers() {
 
 
+
+}
+
+function drawPiece(gameBoardId, imgSrc, pos, extraClasses = []) {
+
+    // get the square based on pos
+    let pieceSquare = $("#" + gameBoardId).find("td[data-pos=" + pos + "]");
+
+    // create the piece image
+    let img = $(document.createElement('img'));
+    img.attr('src', imgSrc);
+    img.attr('class', 'piece');
+
+    // add any extra classes
+    if(extraClasses !== []) {
+        extraClasses.forEach(function(cssClass) {
+            img.attr('class', img.attr('class') + " " + cssClass + " ");
+        });
+    }
+
+    // place the piece
+    pieceSquare.append(img);
+    pieceSquare.attr('data-occupied', 'true');
 
 }
