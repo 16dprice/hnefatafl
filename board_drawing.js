@@ -55,7 +55,7 @@ function drawPieces(gameBoardId) {
     drawKingPawns(gameBoardId, centerPosition);
 
     // draw the attackers
-    drawAttackers();
+    drawAttackers(gameBoardId);
 
 }
 
@@ -99,9 +99,52 @@ function drawKingPawns(gameBoardId, kingPosition) {
 
 }
 
-function drawAttackers() {
+function drawAttackers(gameBoardId) {
 
+    // the attackers are in similar formations all around the board
+    // there are five against the side and the one in the middle of those one row or column out
 
+    let leftSideAttackers = [
+        3 * cols,
+        4 * cols,
+        5 * cols,
+        5 * cols + 1,
+        6 * cols,
+        7 * cols,
+    ];
+
+    let bottomSideAttackers = [
+        10 * cols + 3,
+        10 * cols + 4,
+        10 * cols + 5,
+        9 * cols + 5,
+        10 * cols + 6,
+        10 * cols + 7,
+    ];
+
+    let rightSideAttackers = [
+        4 * cols - 1,
+        5 * cols - 1,
+        6 * cols - 1,
+        6 * cols - 2,
+        7 * cols - 1,
+        8 * cols - 1,
+    ];
+
+    let topSideAttackers = [
+        3,
+        4,
+        5,
+        cols + 5,
+        6,
+        7
+    ];
+
+    let attackers = leftSideAttackers.concat(bottomSideAttackers, rightSideAttackers, topSideAttackers);
+
+    attackers.forEach(function(pos) {
+        drawPiece(gameBoardId, "img/attacker_pawn.PNG", pos);
+    });
 
 }
 
