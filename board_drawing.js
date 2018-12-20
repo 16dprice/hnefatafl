@@ -157,6 +157,7 @@ function drawPiece(gameBoardId, imgSrc, pos, extraClasses = []) {
     let img = $(document.createElement('img'));
     img.attr('src', imgSrc);
     img.attr('class', 'piece');
+    img.attr('onmousedown', 'pickUpPiece(this, event);');
 
     // add any extra classes
     if(extraClasses !== []) {
