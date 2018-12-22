@@ -78,11 +78,17 @@ function capturePieces(lastMove) {
 
     // plus in front of lastMove is to cast it as int
     let neighbors = [
-        +lastMove - 1, // left
-        +lastMove + 1, // right
         +lastMove - 11, // top
         +lastMove + 11 // bottom
     ];
+    // only push the squares to the left and right if they don't move to the previous or next row
+    console.log(+lastMove % 11);
+    if(+lastMove % 11 !== 0) {
+        neighbors.push(+lastMove - 1); // left
+    }
+    if(+lastMove % 11 !== 10) {
+        neighbors.push(+lastMove + 1); // right
+    }
 
     // get the enemy neighbors by checking if the adjacent squares are occupied and if they're enemies
     let enemyNeighbors = [];
@@ -103,12 +109,21 @@ function capturePieces(lastMove) {
 
     // now that we have all surrounding enemies, we can figure out if a piece should be taken
     // by looking if there is another enemy on the other side of the enemy piece
-    let nextPiecePos, nextPieceSquareType, enemySquareType;
+    let nextPiecePos, nextPieceSquareType, enemySquareType, diffRows;
     enemyNeighbors.forEach(function(pos) {
 
         nextPiecePos = pos - (+lastMove - pos);
 
-        if(isSquareOccupied(nextPiecePos)) {
+        // if the two pieces are on different rows
+        if(
+            (nextPiecePos % 11 === 10 && pos % 11 === 0) ||
+            (nextPiecePos % 11 === 0 && pos % 11 === 10)
+        ) {
+            diffRows = true;
+        }
+
+        // if the square is occupied and not on a different row
+        if(isSquareOccupied(nextPiecePos) && !diffRows) {
 
             enemySquareType = getSquareType(pos);
             nextPieceSquareType = getSquareType(nextPiecePos);
