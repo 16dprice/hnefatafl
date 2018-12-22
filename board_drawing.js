@@ -13,18 +13,19 @@ $(document).ready(function() {
 
     let board = document.getElementById(gameBoardId);
 
-    document.addEventListener('click', function(event) {
+    // NOTE this should never trigger when a piece is clicked because of the event.stopPropagation() call in selectPiece in piece_movement.js
+    board.addEventListener('click', function(event) {
 
-        console.log($("#" + gameBoardId));
-
+        // get all of the td squares
         let boardSquares = $("#" + gameBoardId).find("td");
 
+        // remove the selected class from all of them (only one should have it)
         boardSquares.each(function() {
-            $(this).css({background: 'white'});
+            $(this).removeClass('selected_square');
         });
 
-        console.log(event);
-        console.log(event.srcElement.tagName);
+        // no piece is selected now
+        isPieceSelected = false;
 
     });
 
@@ -180,7 +181,7 @@ function drawPiece(imgSrc, pos, extraClasses = []) {
     let img = $(document.createElement('img'));
     img.attr('src', imgSrc);
     img.attr('class', 'piece');
-    img.attr('onclick', 'selectPiece(this);');
+    img.attr('onclick', 'selectPiece(this, event);');
 
     // add any extra classes
     if(extraClasses !== []) {
