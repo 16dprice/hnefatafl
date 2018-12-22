@@ -16,6 +16,9 @@ $(document).ready(function() {
     // NOTE this should never trigger when a piece is clicked because of the event.stopPropagation() call in selectPiece in piece_movement.js
     board.addEventListener('click', function(event) {
 
+        // try to move the piece first
+        movePiece(event);
+
         // get all of the td squares
         let boardSquares = $("#" + gameBoardId).find("td");
 
