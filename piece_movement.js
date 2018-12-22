@@ -50,11 +50,165 @@ function movePiece(event) {
 
 }
 
-// dummy function for now
 // this function assumes that a piece is selected and receives a data-pos value for the destination
 // should return true if the move is legal, false otherwise
 function isMoveLegal(destination) {
 
-    return true;
+    let legalMoves = getLegalMoves(whichPiece);
+
+    // will be -1 if destination is not in legalMoves
+    // will be the position otherwise
+    let isLegal = $.inArray(parseInt(destination), legalMoves);
+
+    return (isLegal !== -1);
 
 }
+
+// gets the legal moves from the starting position 'start'
+function getLegalMoves(start) {
+
+    let legalMoves = [];
+    let i, square;
+
+    let leftSpaces = getLeftSpaces(start);
+
+    // traverse the array from end to start because it's sorted in ascending fashion
+    for(i = leftSpaces.length - 1; i >= 0; i--) {
+        square = $('td[data-pos=' + leftSpaces[i] + ']');
+        if(square.attr('data-occupied') === "true") {
+            break;
+        } else {
+            legalMoves.push(leftSpaces[i]);
+        }
+    }
+
+    let rightSpaces = getRightSpaces(start);
+
+    for(i = 0; i < rightSpaces.length; i++) {
+        square = $('td[data-pos=' + rightSpaces[i] + ']');
+        if(square.attr('data-occupied') === "true") {
+            break;
+        } else {
+            legalMoves.push(rightSpaces[i]);
+        }
+    }
+
+    let aboveSpaces = getAboveSpaces(start);
+
+    // traverse the array from end to start because it's sorted in ascending fashion
+    for(i = aboveSpaces.length - 1; i >= 0; i--) {
+        square = $('td[data-pos=' + aboveSpaces[i] + ']');
+        if(square.attr('data-occupied') === "true") {
+            break;
+        } else {
+            legalMoves.push(aboveSpaces[i]);
+        }
+    }
+
+    let belowSpaces = getBelowSpaces(start);
+
+    for(i = 0; i < belowSpaces.length; i++) {
+        square = $('td[data-pos=' + belowSpaces[i] + ']');
+        if(square.attr('data-occupied') === "true") {
+            break;
+        } else {
+            legalMoves.push(belowSpaces[i]);
+        }
+    }
+
+    return legalMoves;
+
+}
+
+
+//<editor-fold desc="Spaces">
+
+// DESC the next series of functions returns spaces indicated by their name that a piece could theoretically move to
+// DESC from a given starting position
+
+function getLeftSpaces(start) {
+
+    let spaces = [];
+    let i;
+
+    // get spaces to the left
+    // check if the value is equivalent to 10 mod 11 because that represents the first right side square
+    i = start;
+    while(--i % 11 !== 10) {
+        spaces.push(i);
+    }
+
+    return spaces.sort(function(a,b) { return a - b });
+
+}
+
+function getRightSpaces(start) {
+
+    let spaces = [];
+    let i;
+
+    // get spaces to the right
+    // check if the value is equivalent to 0 mod 11 because that represents the first left side square
+    i = start;
+    while(++i % 11 !== 0) {
+        spaces.push(i);
+    }
+
+    return spaces.sort(function(a,b) { return a - b });
+}
+
+function getAboveSpaces(start) {
+
+    let spaces = [];
+    let i;
+
+    // get the spaces above
+    i = parseInt(start) - 11;
+    while(i >= 0) {
+        spaces.push(i);
+        i -= 11;
+    }
+
+    return spaces.sort(function(a,b) { return a - b });
+
+}
+
+function getBelowSpaces(start) {
+
+    let spaces = [];
+    let i;
+
+    // get the spaces below
+    i = parseInt(start) + 11;
+    while(i <= 120) {
+        spaces.push(i);
+        i += 11;
+    }
+
+    return spaces.sort(function(a,b) { return a - b });
+
+}
+
+function getHorSpaces(start) {
+
+    let leftSpaces = getLeftSpaces(start);
+    let rightSpaces = getRightSpaces(start);
+
+    let horSpaces = leftSpaces.concat(rightSpaces);
+
+    return horSpaces.sort(function(a,b) { return a - b });
+
+}
+
+function getVertSpaces(start) {
+
+    let aboveSpaces = getAboveSpaces(start);
+    let belowSpaces = getBelowSpaces(start);
+
+    let vertSpaces = aboveSpaces.concat(belowSpaces);
+
+    return vertSpaces.sort(function(a,b) { return a - b });
+
+}
+
+//</editor-fold>
