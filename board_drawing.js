@@ -1,21 +1,44 @@
+//<editor-fold desc="Global Variables">
+
 let rows = 11;
 let cols = 11;
 
+let gameBoardId = 'game_board';
+
+//</editor-fold>
 
 $(document).ready(function() {
 
-    initBoard('game_board');
+    initBoard();
+
+    let board = document.getElementById(gameBoardId);
+
+    document.addEventListener('click', function(event) {
+
+        console.log($("#" + gameBoardId));
+
+        let boardSquares = $("#" + gameBoardId).find("td");
+
+        boardSquares.each(function() {
+            $(this).css({background: 'white'});
+        });
+
+        console.log(event);
+        console.log(event.srcElement.tagName);
+
+    });
+
 
 });
 
-function initBoard(gameBoardId) {
+function initBoard() {
 
-    drawBoard(gameBoardId);
-    drawPieces(gameBoardId);
+    drawBoard();
+    drawPieces();
 
 }
 
-function drawBoard(gameBoardId) {
+function drawBoard() {
 
     // this will count which space we are on
     // each space will have a data-pos attribute increasing first from left to right then top to bottom
@@ -39,7 +62,7 @@ function drawBoard(gameBoardId) {
 
 }
 
-function drawPieces(gameBoardId) {
+function drawPieces() {
 
     let totalSpaces = rows * cols;
 
@@ -49,23 +72,23 @@ function drawPieces(gameBoardId) {
     let centerPosition = (totalSpaces - 1) / 2;
 
     // draw the king piece at the center
-    drawKing(gameBoardId, centerPosition);
+    drawKing(centerPosition);
 
     // draw the king allies
-    drawKingPawns(gameBoardId, centerPosition);
+    drawKingPawns(centerPosition);
 
     // draw the attackers
-    drawAttackers(gameBoardId);
+    drawAttackers();
 
 }
 
-function drawKing(gameBoardId, kingPosition) {
+function drawKing(kingPosition) {
 
-    drawPiece(gameBoardId, 'img/king.PNG', kingPosition);
+    drawPiece('img/king.PNG', kingPosition);
 
 }
 
-function drawKingPawns(gameBoardId, kingPosition) {
+function drawKingPawns(kingPosition) {
 
     // pawns should be drawn 2 above, below, to the right, and to the left
     // they should also be drawn one square diagonal to the king
@@ -94,12 +117,12 @@ function drawKingPawns(gameBoardId, kingPosition) {
     let positions = horizontalPositions.concat(verticalPositions, diagonalPositions);
 
     positions.forEach(function(pos) {
-        drawPiece(gameBoardId, 'img/king_pawn.PNG', pos);
+        drawPiece('img/king_pawn.PNG', pos);
     });
 
 }
 
-function drawAttackers(gameBoardId) {
+function drawAttackers() {
 
     // the attackers are in similar formations all around the board
     // there are five against the side and the one in the middle of those one row or column out
@@ -143,12 +166,12 @@ function drawAttackers(gameBoardId) {
     let attackers = leftSideAttackers.concat(bottomSideAttackers, rightSideAttackers, topSideAttackers);
 
     attackers.forEach(function(pos) {
-        drawPiece(gameBoardId, "img/attacker_pawn.PNG", pos);
+        drawPiece("img/attacker_pawn.PNG", pos);
     });
 
 }
 
-function drawPiece(gameBoardId, imgSrc, pos, extraClasses = []) {
+function drawPiece(imgSrc, pos, extraClasses = []) {
 
     // get the square based on pos
     let pieceSquare = $("#" + gameBoardId).find("td[data-pos=" + pos + "]");
@@ -157,6 +180,7 @@ function drawPiece(gameBoardId, imgSrc, pos, extraClasses = []) {
     let img = $(document.createElement('img'));
     img.attr('src', imgSrc);
     img.attr('class', 'piece');
+    img.attr('onclick', 'selectPiece(this);');
 
     // add any extra classes
     if(extraClasses !== []) {
