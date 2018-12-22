@@ -198,3 +198,12 @@ function drawPiece(imgSrc, pos, extraClasses = []) {
     pieceSquare.attr('data-occupied', 'true');
 
 }
+
+function removePiece(pos) {
+
+    let square = $('td[data-pos=' + pos + ']');
+
+    square.empty();
+    square.attr('data-occupied', 'false');
+
+}
