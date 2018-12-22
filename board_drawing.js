@@ -174,36 +174,3 @@ function drawAttackers() {
     });
 
 }
-
-function drawPiece(imgSrc, pos, extraClasses = []) {
-
-    // get the square based on pos
-    let pieceSquare = $("#" + gameBoardId).find("td[data-pos=" + pos + "]");
-
-    // create the piece image
-    let img = $(document.createElement('img'));
-    img.attr('src', imgSrc);
-    img.attr('class', 'piece');
-    img.attr('onclick', 'selectPiece(this, event);');
-
-    // add any extra classes
-    if(extraClasses !== []) {
-        extraClasses.forEach(function(cssClass) {
-            img.attr('class', img.attr('class') + " " + cssClass + " ");
-        });
-    }
-
-    // place the piece
-    pieceSquare.append(img);
-    pieceSquare.attr('data-occupied', 'true');
-
-}
-
-function removePiece(pos) {
-
-    let square = $('td[data-pos=' + pos + ']');
-
-    square.empty();
-    square.attr('data-occupied', 'false');
-
-}

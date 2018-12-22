@@ -7,7 +7,7 @@ function selectPiece(piece, event) {
     event.stopPropagation();
 
     // remove the class from the previous square
-    $('td[data-pos=' + whichPiece + ']').removeClass('selected_square');
+    getSquareByPos(whichPiece).removeClass('selected_square');
 
     let square = $(piece).parent('td');
 
@@ -15,7 +15,7 @@ function selectPiece(piece, event) {
     whichPiece = square.attr('data-pos');
 
     // add the class to the new square
-    $('td[data-pos=' + whichPiece + ']').addClass('selected_square');
+    getSquareByPos(whichPiece).addClass('selected_square');
 
 }
 
@@ -104,58 +104,6 @@ function capturePieces(lastMove) {
     });
 
 }
-
-//<editor-fold desc="Helpers">
-
-// returns true if type1 and type 2 are enemies, false otherwise
-// type1 and type2 are -1, 0, or 1 corresponding to the piece types given by the pieceType function
-function areEnemies(type1, type2) {
-
-    // if type1 is king side and type2 is attacker
-    if((type1 === 1 || type1 === 0) && type2 === -1) {
-        return true;
-    }
-
-    // if type2 is king side and type1 is attacker
-    if((type2 === 1 || type2 === 0) && type1 === -1) {
-        return true;
-    }
-
-    return false;
-
-}
-
-function getSquareType(pos) {
-    let square = getSquareByPos(pos);
-    let pieceSrc = square.children('.piece').attr('src');
-    return pieceType(pieceSrc);
-}
-
-// returns 1 for King, 0 for King Pawn, and -1 for Attacker Pawn based on img src
-// img src corresponds to the name of the file in the img folder
-function pieceType(imgSrc) {
-
-    switch(imgSrc) {
-        case "img/attacker_pawn.PNG":
-            return -1;
-        case "img/king_pawn.PNG":
-            return 0;
-        case "img/king.PNG":
-            return 1;
-    }
-
-}
-
-function getSquareByPos(pos) {
-    return $('td[data-pos=' + pos + ']');
-}
-
-function isSquareOccupied(pos) {
-    let square = getSquareByPos(pos);
-    return (square.attr('data-occupied') === "true");
-}
-
-//</editor-fold>
 
 //<editor-fold desc="Move Legality Checking">
 
