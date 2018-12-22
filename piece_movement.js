@@ -27,6 +27,11 @@ function movePiece(event) {
         return;
     }
 
+    // decides if it's the correct turn for the piece to move based on whichPiece and whoseTurn variables
+    if(!correctTurn()) {
+        return;
+    }
+
     let destinationSquare = $(event.srcElement);
 
     // get the destination data-pos to check if move is legal
@@ -50,6 +55,19 @@ function movePiece(event) {
 
     // see if any pieces were captured
     capturePieces(destination);
+
+    // change which turn it is
+    whoseTurn = -whoseTurn;
+
+}
+
+// since whoseTurn is -1 for attackers and 1 for king side, we can just check to see if
+// the selected piece and the whoseTurn variables are enemies (see pieceType() function)
+// if they are, you can't move
+// else you can move
+function correctTurn() {
+
+    return !(areEnemies(whoseTurn, getSquareType(whichPiece)));
 
 }
 

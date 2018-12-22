@@ -3,6 +3,8 @@
 let rows = 11;
 let cols = 11;
 
+let whoseTurn = -1; // -1 for attackers turn, 1 for king side turn
+
 let gameBoardId = 'game_board';
 
 //</editor-fold>
