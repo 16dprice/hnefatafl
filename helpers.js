@@ -68,6 +68,7 @@ function areEnemies(type1, type2) {
 
 }
 
+// returns -1, 0, or 1 based on the pieceType function
 function getSquareType(pos) {
     let square = getSquareByPos(pos);
     let pieceSrc = square.children('.piece').attr('src');
@@ -89,6 +90,12 @@ function pieceType(imgSrc) {
 
 }
 
+// returns true if king is at pos
+// false otherwise
+function isKing(pos) {
+    return (getSquareType(pos) === 1);
+}
+
 // since whoseTurn is -1 for attackers and 1 for king side, we can just check to see if
 // the selected piece and the whoseTurn variables are enemies (see pieceType() function)
 // if they are, you can't move
@@ -104,15 +111,37 @@ function canSelectPiece(pieceType) {
     return !(areEnemies(whoseTurn, pieceType));
 }
 
+// returns the td with data-pos value equal to pos
 function getSquareByPos(pos) {
     return $('td[data-pos=' + pos + ']');
 }
 
+// true if the square is occupied by ANY piece
+// false otherwise
 function isSquareOccupied(pos) {
     let square = getSquareByPos(pos);
     return (square.attr('data-occupied') === "true");
 }
 
+// true if the square is occupied by an attacker
+// false otherwise
+function isSquareAttacker(pos) {
+    if(isSquareOccupied(pos)) {
+        return (getSquareType(pos) === -1); // attackers are represented by -1
+    }
+}
+
+// posArray is an array of data-pos values i.e. [1, 3, 100, ...]
+// returns true if all positions in the array are occupied by attackers
+// false if even one of them is not
+function areSquaresAllAttackers(posArray) {
+    posArray.forEach(function(pos) {
+        if(!isSquareAttacker(pos)) return false;
+    });
+    return true;
+}
+
+// get a jQuery array of td elements
 function getAllBoardSquares() {
     return $("#" + gameBoardId).find("td");
 }
