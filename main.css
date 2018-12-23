@@ -42,6 +42,8 @@ table {
 }
 
 .legal_move_overlay {
+    width: 58px;
+    height: 58px;
     opacity: 0.5;
 }
 
