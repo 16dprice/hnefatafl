@@ -40,6 +40,7 @@ function drawLegalMoveOverlayImage(pos) {
     let img = $(document.createElement('img'));
     img.attr('src', 'img/legal_move_overlay.PNG');
     img.attr('class', 'legal_move_overlay');
+    img.attr('data-pos', pos);
     img.hide(); // hiding them initially because no move is selected
 
     let square = getSquareByPos(pos);
