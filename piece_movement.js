@@ -9,6 +9,15 @@ function selectPiece(piece, event) {
     // remove the class from the previous square
     getSquareByPos(whichPiece).removeClass('selected_square');
 
+    // get the board squares and remove legal move class form all the squares
+    let boardSquares = getAllBoardSquares();
+
+    // remove the selected class from all of them (only one should have it)
+    // also remove the legal move class from all of them
+    boardSquares.each(function() {
+        $(this).children('.legal_move_overlay').hide();
+    });
+
     let square = $(piece).parent('td');
 
     isPieceSelected = true;
@@ -16,6 +25,15 @@ function selectPiece(piece, event) {
 
     // add the class to the new square
     getSquareByPos(whichPiece).addClass('selected_square');
+
+    // highlight all of the legal moves
+    let legalMoves = getLegalMoves(whichPiece);
+
+    let legalSquare;
+    legalMoves.forEach(function(pos) {
+        legalSquare = getSquareByPos(pos);
+        $(legalSquare).children('.legal_move_overlay').show();
+    });
 
 }
 

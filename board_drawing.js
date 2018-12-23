@@ -22,11 +22,13 @@ $(document).ready(function() {
         movePiece(event);
 
         // get all of the td squares
-        let boardSquares = $("#" + gameBoardId).find("td");
+        let boardSquares = getAllBoardSquares();
 
         // remove the selected class from all of them (only one should have it)
+        // also remove the legal move class from all of them
         boardSquares.each(function() {
             $(this).removeClass('selected_square');
+            $(this).children('.legal_move_overlay').hide();
         });
 
         // no piece is selected now
@@ -48,7 +50,7 @@ function drawBoard() {
 
     // this will count which space we are on
     // each space will have a data-pos attribute increasing first from left to right then top to bottom
-    let space = 0;
+    let pos = 0;
 
     // build the board
     for(let r = 0; r < rows; r++) {
@@ -58,12 +60,19 @@ function drawBoard() {
         // setup the square with it's position
         // also preset all positions to be unoccupied
         for(let c = 0; c < cols; c++) {
-            col += "<td data-pos='" + space + "' data-occupied='false' class='board_square'></td>";
-            space++;
+
+            col += "<td data-pos='" + pos + "' data-occupied='false' class='board_square'></td>";
+            
+            pos++;
         }
 
         $("#" + gameBoardId).append("<tr>" + col + "</tr>");
 
+    }
+
+    // append all overlay images
+    for(let i = 0; i < pos; i++) {
+        drawLegalMoveOverlayImage(i);
     }
 
 }

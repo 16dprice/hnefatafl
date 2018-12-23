@@ -5,7 +5,7 @@
 function drawPiece(imgSrc, pos, extraClasses = []) {
 
     // get the square based on pos
-    let pieceSquare = $("#" + gameBoardId).find("td[data-pos=" + pos + "]");
+    let pieceSquare = getSquareByPos(pos);
 
     // create the piece image
     let img = $(document.createElement('img'));
@@ -30,8 +30,20 @@ function removePiece(pos) {
 
     let square = getSquareByPos(pos);
 
-    square.empty();
+    square.children('.piece').remove();
     square.attr('data-occupied', 'false');
+
+}
+
+function drawLegalMoveOverlayImage(pos) {
+
+    let img = $(document.createElement('img'));
+    img.attr('src', 'img/legal_move_overlay.PNG');
+    img.attr('class', 'legal_move_overlay');
+    img.hide(); // hiding them initially because no move is selected
+
+    let square = getSquareByPos(pos);
+    square.append(img);
 
 }
 
@@ -83,4 +95,8 @@ function getSquareByPos(pos) {
 function isSquareOccupied(pos) {
     let square = getSquareByPos(pos);
     return (square.attr('data-occupied') === "true");
+}
+
+function getAllBoardSquares() {
+    return $("#" + gameBoardId).find("td");
 }

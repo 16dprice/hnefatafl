@@ -40,3 +40,11 @@ table {
 .selected_square {
     background: red !important;
 }
+
+.legal_move_overlay {
+    opacity: 0.5;
+}
+
+.legal_move_overlay:hover {
+    background: aqua;
+}
