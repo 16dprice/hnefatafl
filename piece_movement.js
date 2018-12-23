@@ -62,7 +62,6 @@ function movePiece(event) {
 
     // if it's not legal, tell the user and return
     if(!isMoveLegal(destination)) {
-        alert('illegal move!');
         return;
     }
 
