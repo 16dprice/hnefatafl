@@ -6,6 +6,7 @@ function selectPiece(piece, event) {
     // so the global board onclick doesn't fire
     event.stopPropagation();
 
+    // if it's not the correct turn to select the piece, don't let the player select it
     let type = pieceType($(piece).attr('src'));
     if(!canSelectPiece(type)) {
         return;
@@ -94,7 +95,6 @@ function capturePieces(lastMove) {
         +lastMove + 11 // bottom
     ];
     // only push the squares to the left and right if they don't move to the previous or next row
-    console.log(+lastMove % 11);
     if(+lastMove % 11 !== 0) {
         neighbors.push(+lastMove - 1); // left
     }
@@ -124,8 +124,11 @@ function capturePieces(lastMove) {
     let nextPiecePos, nextPieceSquareType, enemySquareType, diffRows;
     enemyNeighbors.forEach(function(pos) {
 
+        // draw this out if you want to check
+        // this is how to easily get the next consecutive piece
         nextPiecePos = pos - (+lastMove - pos);
 
+        diffRows = false;
         // if the two pieces are on different rows
         if(
             (nextPiecePos % 11 === 10 && pos % 11 === 0) ||
@@ -141,12 +144,97 @@ function capturePieces(lastMove) {
             nextPieceSquareType = getSquareType(nextPiecePos);
 
             if(areEnemies(enemySquareType, nextPieceSquareType)) {
-                removePiece(pos);
+                // if it's the king, do something different because it's harder to capture
+                if(isKing(pos)) {
+                    captureKing(pos);
+                // else just capture the piece normally
+                } else {
+                    removePiece(pos);
+                }
             }
 
         }
 
     });
+
+}
+
+function captureKing(kingPos) {
+
+    // NOTE at this point, whatever is calling this function has determined that it should be captured so we're
+    // NOTE not checking that the king should be captured
+    // NOTE i.e. the king could be in scenario B) listed below by moving itself there and wouldn't actually be captured
+    // NOTE because he put himself there, but we're assuming that isn't the case
+
+    // there are a couple scenarios where you can capture the king
+    // A) the king is beside one of the corners and there are two pieces on the two leftover sides
+    // B) the king is beside it's starting square and is surrounded on the other three sides
+    // C) the king is surrounded on all four sides
+
+
+    let successAlert = 'King Captured!\nAttackers Win >:D';
+
+    // SCENARIO A
+    let kingCapturedByCorner = captureKingByCorner(kingPos);
+    if(kingCapturedByCorner) {
+        alert(successAlert);
+        return;
+    }
+
+    // SCENARIO B
+
+
+}
+
+// this function takes a kings position and checks whether or not it is directly beside a corner square
+// if it is, then it sees if it is surrounded properly by two attackers to see if it gets captured
+function captureKingByCorner(kingPos) {
+
+    // the data-pos value for all squares by corners: 1, 9, 11, 21, 99, 109, 111, 119
+    let squaresByCorners = [1, 9, 11, 21, 99, 109, 111, 119];
+
+    // if the king isn't in one of these spots, then it obviously can't be captured in one
+    if(!$.inArray(+kingPos, squaresByCorners)) {
+        return false;
+    }
+
+    // the positions the enemies need to be in to capture the king, indexed by kings position
+    let enemyCapturePositions = {
+        1: [2, 12],
+        9: [8, 20],
+        11: [12, 22],
+        21: [20, 32],
+        99: [88, 100],
+        109: [98, 108],
+        111: [100, 112],
+        119: [108, 118]
+    };
+
+    // true if all the squares in the array are attackers
+    return areSquaresAllAttackers(enemyCapturePositions[+kingPos]);
+
+}
+
+function captureKingBesideStartingSquare(kingPos) {
+
+    // the data-pos value for all squares adjacent to starting square: 49, 59, 61, 71
+    let startingAdjSquares = [49, 59, 61, 71];
+
+    // if the king isn't in one of these spots, then it obviously can't be captured in one
+    if(!$.inArray(+kingPos, startingAdjSquares)) {
+        return false;
+    }
+
+    // the positions the enemies need to be in to capture the king, indexed by kings position
+    let enemyCapturePositions = {
+        49: [38, 48, 50],
+        59: [48, 58, 70],
+        61: [50, 62, 72],
+        71: [70, 72, 82]
+    };
+
+    // true if all the squares in the array are attackers
+    return areSquaresAllAttackers(enemyCapturePositions[+kingPos]);
 
 }
 
@@ -222,8 +310,8 @@ function getLegalMoves(start) {
 
 //<editor-fold desc="Spaces">
 
-// DESC the next series of functions returns spaces indicated by their name that a piece could theoretically move to
-// DESC from a given starting position
+// DESC the next series of functions returns spaces indicated by their data-pos value that a piece could theoretically
+// DESC move to from a given starting position
 
 function getLeftSpaces(start) {
 
