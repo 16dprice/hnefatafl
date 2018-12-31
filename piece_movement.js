@@ -1,9 +1,19 @@
 let isPieceSelected = false;
 let whichPiece = {row: -1, col: -1}; // the position of the piece selected
-let gameOver = false; // will be set to true if the king is captured
+
+let kingCaptured = false; // will be set to true if the king is captured
 let kingCapturedAlert = 'King Captured!\nAttackers Win >:D';
 
+let kingWon = false; // will be set to true if the king wins
+let kingWonAlert = 'King Won!\nAttackers Lose >:(';
+
 function selectPiece(piece, event) {
+
+    // if the game is over, do nothing
+    if(kingCaptured || kingWon) {
+        isPieceSelected = false; // make sure this is false
+        return;
+    }
 
     // so the global board onclick doesn't fire
     event.stopPropagation();
@@ -79,11 +89,16 @@ function movePiece(event) {
     removePiece(whichPiece.row, whichPiece.col);
 
     drawPiece(pieceSrc, destinationRow, destinationCol);
+    if(pieceType(pieceSrc) === 1 && isCornerSquare(destinationRow, destinationCol)) {
+        kingWon = true;
+        alert(kingWonAlert);
+        return;
+    }
 
     // see if any pieces were captured
     capturePieces(destinationRow, destinationCol);
 
-    if(gameOver) {
+    if(kingCaptured) {
         alert(kingCapturedAlert);
         return;
     }
@@ -165,7 +180,7 @@ function captureKing(kingPosRow, kingPosCol) {
     // SCENARIO A
     let kingCapturedByCorner = captureKingByCorner(kingPosRow, kingPosCol);
     if(kingCapturedByCorner) {
-        gameOver = true;
+        kingCaptured = true;
         return;
     }
 
@@ -173,21 +188,21 @@ function captureKing(kingPosRow, kingPosCol) {
     let kingCapturedByWall = captureKingByWall(kingPosRow, kingPosCol);
     console.log(kingCapturedByWall);
     if(kingCapturedByWall) {
-        gameOver = true;
+        kingCaptured = true;
         return;
     }
 
     // SCENARIO C
     let kingCapturedByStartingSquare = captureKingByStartingSquare(kingPosRow, kingPosCol);
     if(kingCapturedByStartingSquare) {
-        gameOver = true;
+        kingCaptured = true;
         return;
     }
 
     // SCENARIO D
     let kingCapturedOnAllSides = captureKingOnAllSides(kingPosRow, kingPosCol);
     if(kingCapturedOnAllSides) {
-        gameOver = true;
+        kingCaptured = true;
         return;
     }
 
