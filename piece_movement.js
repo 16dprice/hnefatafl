@@ -358,6 +358,15 @@ function getLegalMoves(startRow, startCol) {
         }
     }
 
+    // filter out the corners if the current piece isn't the king
+    if(!isKing(whichPiece.row, whichPiece.col)) {
+        let filteredLegalMoves = [];
+        legalMoves.forEach(function(rowColArr) {
+            if(!isCornerSquare(rowColArr[0], rowColArr[1])) filteredLegalMoves.push(rowColArr);
+        });
+        return filteredLegalMoves;
+    }
+
     return legalMoves;
 
 }

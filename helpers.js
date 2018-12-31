@@ -195,6 +195,20 @@ function isSquareAttacker(row, col) {
     return false;
 }
 
+// true if (row, col) is a corner square
+// false otherwise
+function isCornerSquare(row, col) {
+    // if it's the first row
+    if(+row === 0) {
+        return (+col === 0 || +col === (cols - 1));
+    }
+    // if it's the last row
+    if(+row === (rows - 1)) {
+        return (+col === 0 || +col === (cols - 1));
+    }
+    return false;
+}
+
 // posArr is an array of data-row and data-col values i.e. [[row1, col1], [row2, col2], ...]
 // returns true if all positions in the array are occupied by attackers
 // false if even one of them is not
