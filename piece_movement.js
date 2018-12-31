@@ -143,16 +143,18 @@ function capturePieces(lastMoveRow, lastMoveCol) {
         }
 
         // if the square is occupied
-        if(isSquareOccupied(nextPiecePos[0], nextPiecePos[1])) {
+        if(isSquareOccupied(nextPiecePos[0], nextPiecePos[1]) || isCornerSquare(nextPiecePos[0], nextPiecePos[1])) {
 
             enemySquareType = getSquareType(rowColArr[0], rowColArr[1]);
             nextPieceSquareType = getSquareType(nextPiecePos[0], nextPiecePos[1]);
 
-            if(areEnemies(enemySquareType, nextPieceSquareType)) {
-                // make sure it's not the king because we already check for that above - no need to do it twice
-                if(!isKing(rowColArr[0], rowColArr[1])) {
-                    removePiece(rowColArr[0], rowColArr[1]);
-                }
+            // if the enemy to the piece that was moved is next to another one of it's enemies or a corner piece
+            // also make sure it's not the king because this is handled differently
+            if((
+                areEnemies(enemySquareType, nextPieceSquareType) || isCornerSquare(nextPiecePos[0], nextPiecePos[1])) &&
+                !isKing(rowColArr[0], rowColArr[1])
+            ) {
+                removePiece(rowColArr[0], rowColArr[1]);
             }
 
         }
