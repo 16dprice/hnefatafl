@@ -170,8 +170,9 @@ function captureKing(kingPosRow, kingPosCol) {
 
     // there are a couple scenarios where you can capture the king
     // A) the king is beside one of the corners and there are two pieces on the two leftover sides
-    // B) the king is beside it's starting square and is surrounded on the other three sides
-    // C) the king is surrounded on all four sides
+    // B) the king is one of the sides, not next to a corner and there are pieces on the other three sides of it
+    // C) the king is beside it's starting square and is surrounded on the other three sides
+    // D) the king is surrounded on all four sides
 
 
     // SCENARIO A
@@ -182,12 +183,26 @@ function captureKing(kingPosRow, kingPosCol) {
     }
 
     // SCENARIO B
-    let kingCapturedByStartingSquare = captureKingByStartingSquare(kingPosRow, kingPosCol);
-    if(kingCapturedByStartingSquare) {
-        alert('you did it');
+    let kingCapturedByWall = captureKingByWall(kingPosRow, kingPosCol);
+    console.log(kingCapturedByWall);
+    if(kingCapturedByWall) {
+        gameOver = true;
         return;
     }
 
+    // SCENARIO C
+    let kingCapturedByStartingSquare = captureKingByStartingSquare(kingPosRow, kingPosCol);
+    if(kingCapturedByStartingSquare) {
+        gameOver = true;
+        return;
+    }
+
+    // SCENARIO D
+    let kingCapturedOnAllSides = captureKingOnAllSides(kingPosRow, kingPosCol);
+    if(kingCapturedOnAllSides) {
+        gameOver = true;
+        return;
+    }
 
 }
 
@@ -222,6 +237,29 @@ function captureKingByCorner(kingPosRow, kingPosCol) {
 
 }
 
+function captureKingByWall(kingPosRow, kingPosCol) {
+
+    // check if king really is beside a wall
+    // this happens when one of the position variables is 0 or maximized
+    // if it's not, return false
+    if(!(
+        +kingPosRow === 0          ||
+        +kingPosRow === (rows - 1) ||
+        +kingPosCol === 0          ||
+        +kingPosCol === (cols - 1)
+    )) {
+        return false;
+    }
+
+    // the positions the enemies need to be in to capture the king
+    // this would include the corner if the king were beside, which can't have pieces in it
+    // but that case is handled by captureKingByCorner function
+    let enemyCapturePositions = getAdjSquares(kingPosRow, kingPosCol);
+
+    return areSquaresAllAttackers(enemyCapturePositions);
+
+}
+
 // this function takes a kings position and checks whether or not it is beside the starting square
 // if it is, then it sees if it is surrounded properly by three attackers to see if it gets captured
 function captureKingByStartingSquare(kingPosRow, kingPosCol) {
@@ -248,6 +286,14 @@ function captureKingByStartingSquare(kingPosRow, kingPosCol) {
 
     // true if all the squares in the array are attackers
     return areSquaresAllAttackers(filteredAdjacentSquares);
+
+}
+
+function captureKingOnAllSides(kingPosRow, kingPosCol) {
+
+    // pretty basic
+    // if the king was in any *special* spot, the captureKing function would've already caught it
+    return areSquaresAllAttackers(getAdjSquares(kingPosRow, kingPosCol));
 
 }
 

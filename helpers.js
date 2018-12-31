@@ -82,7 +82,7 @@ function getAdjSquares(row, col) {
     let legalAdjacentSquares = [];
     adjacentSquares.forEach(function(rowColArr) {
         if( // if the row and column are in the bounds of the board
-            !(rowColArr[0] < 0 || rowColArr[0] > rows || rowColArr[1] < 0 || rowColArr[1] > cols)
+            !(rowColArr[0] < 0 || rowColArr[0] >= rows || rowColArr[1] < 0 || rowColArr[1] >= cols)
         ) {
             legalAdjacentSquares.push(rowColArr);
         }
