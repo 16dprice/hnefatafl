@@ -99,26 +99,17 @@ function capturePieces(lastMoveRow, lastMoveCol) {
     let squareType = getSquareType(lastMoveRow, lastMoveCol);
 
     // plus in front of lastMove vars is to cast it as int
-    let neighbors = [
-        [+lastMoveRow - 1, +lastMoveCol], // top
-        [+lastMoveRow + 1, +lastMoveCol], // bottom
-        [+lastMoveRow, +lastMoveCol - 1], // left
-        [+lastMoveRow, +lastMoveCol + 1] // right
-    ];
+    let neighbors = getAdjSquares(lastMoveRow, lastMoveCol);
 
     // get the enemy neighbors by checking if the adjacent squares are occupied and if they're enemies
     let enemyNeighbors = [];
     let neighborSquareType;
     neighbors.forEach(function (rowColArr) {
 
-        if(isSquareOccupied(rowColArr[0], rowColArr[1])) {
+        neighborSquareType = getSquareType(rowColArr[0], rowColArr[1]);
 
-            neighborSquareType = getSquareType(rowColArr[0], rowColArr[1]);
-
-            if(areEnemies(squareType, neighborSquareType)) {
-                enemyNeighbors.push(rowColArr);
-            }
-
+        if(areEnemies(squareType, neighborSquareType)) {
+            enemyNeighbors.push(rowColArr);
         }
 
     });
@@ -140,20 +131,14 @@ function capturePieces(lastMoveRow, lastMoveCol) {
         // if the square is the king, do something different
         if(isKing(rowColArr[0], rowColArr[1])) {
             captureKing(rowColArr[0], rowColArr[1]);
-        }
+        } else {
 
-        // if the square is occupied
-        if(isSquareOccupied(nextPiecePos[0], nextPiecePos[1]) || isCornerSquare(nextPiecePos[0], nextPiecePos[1])) {
-
+            // get the square type of the current enemy in focus and the piece on the other side of it
             enemySquareType = getSquareType(rowColArr[0], rowColArr[1]);
             nextPieceSquareType = getSquareType(nextPiecePos[0], nextPiecePos[1]);
 
             // if the enemy to the piece that was moved is next to another one of it's enemies or a corner piece
-            // also make sure it's not the king because this is handled differently
-            if((
-                areEnemies(enemySquareType, nextPieceSquareType) || isCornerSquare(nextPiecePos[0], nextPiecePos[1])) &&
-                !isKing(rowColArr[0], rowColArr[1])
-            ) {
+            if (areEnemies(enemySquareType, nextPieceSquareType) || isCornerSquare(nextPiecePos[0], nextPiecePos[1])) {
                 removePiece(rowColArr[0], rowColArr[1]);
             }
 

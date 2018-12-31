@@ -133,7 +133,7 @@ function areEnemies(type1, type2) {
 
 }
 
-// returns -1, 0, or 1 based on the pieceType function
+// returns -2, -1, 0, or 1 based on the pieceType function
 function getSquareType(row, col) {
     let square = getSquareByRowCol(row, col);
     let pieceSrc = square.children('.piece').attr('src');
@@ -141,6 +141,7 @@ function getSquareType(row, col) {
 }
 
 // returns 1 for King, 0 for King Pawn, and -1 for Attacker Pawn based on img src
+// returns -2 for an empty space or a non-existent space
 // img src corresponds to the name of the file in the img folder
 function pieceType(imgSrc) {
 
@@ -151,6 +152,8 @@ function pieceType(imgSrc) {
             return 0;
         case "img/king.PNG":
             return 1;
+        default:
+            return -2;
     }
 
 }
